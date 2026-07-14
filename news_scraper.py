@@ -27,7 +27,8 @@ KEYWORDS = [
     "Ureia",
     "Enxofre",
     "Sufur",
-    "Biofragane"
+    "Biofragane",
+    "Carmeuse"
 ]
 
 DIAS_RETROATIVOS = 360
