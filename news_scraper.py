@@ -221,6 +221,36 @@ html = f"""
             margin-top: 5px;
         }}
 
+        .search-container {{
+            max-width: 1200px;
+            margin: 0 auto 24px;
+        }}
+
+        .search-label {{
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }}
+
+        .search-input {{
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            font-size: 1rem;
+            color: #1a1a1a;
+            outline: none;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }}
+
+        .search-input:focus {{
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+        }}
+
         main {{
             max-width: 1200px;
             margin: 0 auto;
@@ -243,6 +273,10 @@ html = f"""
         .card:hover {{
             transform: translateY(-8px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }}
+
+        .card.is-hidden {{
+            display: none;
         }}
 
         .card-header {{
@@ -310,6 +344,17 @@ html = f"""
             font-size: 0.95rem;
         }}
 
+        .no-results {{
+            max-width: 1200px;
+            margin: 0 auto 24px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }}
+
         @media (max-width: 768px) {{
             header h1 {{
                 font-size: 1.8rem;
@@ -335,7 +380,7 @@ html = f"""
         <div class="stats">
             <div class="stat">
                 Noticias encontradas
-                <strong>{len(df)}</strong>
+                <strong id="news-count">{len(df)}</strong>
             </div>
             <div class="stat">
                 Ultima atualizacao
@@ -344,6 +389,14 @@ html = f"""
         </div>
     </header>
 
+    <section class="search-container" aria-label="Filtro de noticias">
+        <label class="search-label" for="news-search">Buscar noticias por palavra-chave ou titulo</label>
+        <input id="news-search" class="search-input" type="search" placeholder="Digite para filtrar..." list="keyword-suggestions" autocomplete="off">
+        <datalist id="keyword-suggestions"></datalist>
+    </section>
+
+    <p id="no-results-message" class="no-results" hidden>Nenhuma notícia encontrada.</p>
+
     <main>
         {cards_html}
     </main>
@@ -351,6 +404,60 @@ html = f"""
     <footer>
         <p>Monitor de noticias automatico • Atualizado em {ultima_atualizacao}</p>
     </footer>
+
+    <script>
+        const searchInput = document.getElementById("news-search");
+        const suggestionsList = document.getElementById("keyword-suggestions");
+        const cards = Array.from(document.querySelectorAll("main .card"));
+        const noResultsMessage = document.getElementById("no-results-message");
+        const newsCount = document.getElementById("news-count");
+
+        const normalizeText = (value) => value.toLocaleLowerCase("pt-BR");
+
+        const keywordMap = new Map();
+        for (const card of cards) {{
+            const keywordText = card.querySelector(".badge")?.textContent?.trim();
+            if (!keywordText) {{
+                continue;
+            }}
+
+            const normalizedKeyword = normalizeText(keywordText);
+            if (!keywordMap.has(normalizedKeyword)) {{
+                keywordMap.set(normalizedKeyword, keywordText);
+            }}
+        }}
+
+        Array
+            .from(keywordMap.values())
+            .sort((a, b) => a.localeCompare(b, "pt-BR", {{ sensitivity: "base" }}))
+            .forEach((keyword) => {{
+                const option = document.createElement("option");
+                option.value = keyword;
+                suggestionsList.appendChild(option);
+            }});
+
+        const applyFilter = () => {{
+            const filterText = normalizeText(searchInput.value.trim());
+            let visibleCards = 0;
+
+            for (const card of cards) {{
+                const title = card.querySelector(".card-title")?.textContent ?? "";
+                const keyword = card.querySelector(".badge")?.textContent ?? "";
+                const searchableText = normalizeText(`${{title}} ${{keyword}}`);
+                const isMatch = !filterText || searchableText.includes(filterText);
+
+                card.classList.toggle("is-hidden", !isMatch);
+                if (isMatch) {{
+                    visibleCards += 1;
+                }}
+            }}
+
+            newsCount.textContent = String(visibleCards);
+            noResultsMessage.hidden = visibleCards > 0;
+        }};
+
+        searchInput.addEventListener("input", applyFilter);
+    </script>
 
 </body>
 
