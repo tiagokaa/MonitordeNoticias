@@ -19,7 +19,7 @@ KEYWORDS = [
     "agricultural lime",
     "Lhoist",
     "Ical",
-    "Cal Cruzeiro",
+    "\"Cal Cruzeiro\"",
     "Sibelco",
     "Brasical",
     "CMOC",
@@ -33,6 +33,8 @@ KEYWORDS = [
 
 DIAS_RETROATIVOS = 360
 
+GOOGLE_NEWS_LANGUAGE = "pt-BR"
+
 # ======================================
 # COLETA DAS NOTICIAS
 # ======================================
@@ -41,11 +43,24 @@ data_limite = datetime.now() - timedelta(days=DIAS_RETROATIVOS)
 
 noticias = []
 
+def montar_query_google(keyword: str) -> str:
+
+    termo = keyword.strip()
+
+    # Termos entre aspas devem ser buscados como frase exata.
+    if termo.startswith("\"") and termo.endswith("\"") and len(termo) > 2:
+        termo_limpo = termo[1:-1].strip()
+        return f"\"{termo_limpo}\""
+
+    return termo
+
 for keyword in KEYWORDS:
 
+    query = montar_query_google(keyword)
+
     rss_url = (
-        f"https://news.google.com/rss/search?q={quote(keyword)}"
-        "&hl=pt-BR&gl=BR&ceid=BR:pt-419"
+        f"https://news.google.com/rss/search?q={quote(query)}"
+        f"&hl={GOOGLE_NEWS_LANGUAGE}"
     )
 
     try:
