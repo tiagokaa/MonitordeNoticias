@@ -34,6 +34,7 @@ KEYWORDS = [
 DIAS_RETROATIVOS = 360
 
 GOOGLE_NEWS_LANGUAGE = "pt-BR"
+BING_NEWS_LANGUAGE = "pt-BR"
 
 # ======================================
 # COLETA DAS NOTICIAS
@@ -54,14 +55,7 @@ def montar_query_google(keyword: str) -> str:
 
     return termo
 
-for keyword in KEYWORDS:
-
-    query = montar_query_google(keyword)
-
-    rss_url = (
-        f"https://news.google.com/rss/search?q={quote(query)}"
-        f"&hl={GOOGLE_NEWS_LANGUAGE}"
-    )
+def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
 
     try:
 
@@ -93,7 +87,26 @@ for keyword in KEYWORDS:
                 pass
 
     except Exception as erro:
-        print(f"Erro em '{keyword}': {erro}")
+        print(f"Erro em '{keyword}' ({fonte}): {erro}")
+
+for keyword in KEYWORDS:
+
+    query = montar_query_google(keyword)
+
+    google_rss_url = (
+        f"https://news.google.com/rss/search?q={quote(query)}"
+        f"&hl={GOOGLE_NEWS_LANGUAGE}"
+    )
+
+    bing_rss_url = (
+        f"https://www.bing.com/news/search?q={quote(query)}"
+        "&format=rss"
+        f"&setlang={BING_NEWS_LANGUAGE.lower()}"
+        f"&mkt={BING_NEWS_LANGUAGE}"
+    )
+
+    coletar_noticias_rss(keyword, "Google News", google_rss_url)
+    coletar_noticias_rss(keyword, "Bing News", bing_rss_url)
 
 # ======================================
 # DATAFRAME
