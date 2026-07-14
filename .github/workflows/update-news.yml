@@ -1,0 +1,31 @@
+name: Update News Daily
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Executa 9h da manhã todo dia
+  workflow_dispatch:     # Permite executar manualmente
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Run scraper
+        run: python news_scraper.py
+      
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html Noticias_Calcario_*.xlsx
+          git commit -m "🤖 Update news $(date +'%Y-%m-%d %H:%M')" || true
+          git push
