@@ -9,10 +9,10 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@v4
       
       - name: Setup Python
-        uses: actions/setup-python@latest
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       
