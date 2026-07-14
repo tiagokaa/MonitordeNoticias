@@ -219,11 +219,11 @@ html = f"""
         }}
 
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #EFF4F9 0%, #D6E3EF 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: #323E48;
         }}
 
         header {{
@@ -231,10 +231,10 @@ html = f"""
             margin: 0 auto 40px;
             text-align: center;
             color: white;
-            background: rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #10497C 0%, #0067B3 100%);
             padding: 40px 20px;
             border-radius: 12px;
-            backdrop-filter: blur(10px);
+            border: 1px solid #248DC1;
         }}
 
         header h1 {{
@@ -252,17 +252,19 @@ html = f"""
         }}
 
         .stat {{
-            background: rgba(255, 255, 255, 0.2);
+            background: #EFF4F9;
             padding: 15px 25px;
             border-radius: 8px;
             font-size: 1.1rem;
-            backdrop-filter: blur(10px);
+            color: #1C2325;
+            border: 1px solid #CFD2D3;
         }}
 
         .stat strong {{
             display: block;
             font-size: 1.8rem;
             margin-top: 5px;
+            color: #10497C;
         }}
 
         .search-container {{
@@ -272,27 +274,26 @@ html = f"""
 
         .search-label {{
             display: block;
-            color: white;
+            color: #10497C;
             font-weight: 600;
             margin-bottom: 10px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }}
 
         .search-input {{
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid #A2A9AD;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.95);
+            background: #FFFFFF;
             font-size: 1rem;
-            color: #1a1a1a;
+            color: #323E48;
             outline: none;
             transition: box-shadow 0.2s, border-color 0.2s;
         }}
 
         .search-input:focus {{
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+            border-color: #248DC1;
+            box-shadow: 0 0 0 3px rgba(36, 141, 193, 0.22);
         }}
 
         main {{
@@ -304,10 +305,11 @@ html = f"""
         }}
 
         .card {{
-            background: white;
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid #CFD2D3;
+            box-shadow: 0 8px 24px rgba(16, 73, 124, 0.12);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
@@ -315,8 +317,8 @@ html = f"""
         }}
 
         .card:hover {{
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(16, 73, 124, 0.2);
         }}
 
         .card.is-hidden {{
@@ -332,12 +334,12 @@ html = f"""
 
         .card-number {{
             font-weight: 700;
-            color: #667eea;
+            color: #0067B3;
             font-size: 0.9rem;
         }}
 
         .badge {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0098A7 0%, #248DC1 100%);
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -355,20 +357,20 @@ html = f"""
         .card-title {{
             font-size: 1.2rem;
             line-height: 1.4;
-            color: #1a1a1a;
+            color: #323E48;
             font-weight: 600;
             transition: all 0.2s;
         }}
 
         .card-title-link:hover .card-title {{
-            color: #667eea;
+            color: #F58220;
         }}
 
         .card-meta {{
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #666;
+            color: #5F6B6D;
             font-size: 0.95rem;
         }}
 
@@ -378,21 +380,21 @@ html = f"""
 
         time {{
             font-weight: 500;
-            color: #764ba2;
+            color: #10497C;
         }}
 
         footer {{
             text-align: center;
             margin-top: 50px;
-            color: rgba(255, 255, 255, 0.7);
+            color: #5F6B6D;
             font-size: 0.95rem;
         }}
 
         .no-results {{
             max-width: 1200px;
             margin: 0 auto 24px;
-            background: rgba(255, 255, 255, 0.18);
-            color: white;
+            background: #F58220;
+            color: #FFFFFF;
             text-align: center;
             font-weight: 600;
             border-radius: 10px;
