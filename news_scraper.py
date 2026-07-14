@@ -16,7 +16,18 @@ KEYWORDS = [
     "calcário",
     "corretivo de solo",
     "limestone",
-    "agricultural lime"
+    "agricultural lime",
+    "Lhoist”,
+    “Ical”,
+    “Cal Cruzeiro”,
+    “Sibelco”,
+    “Brasical”,
+    “CMOC”,
+    “Mosaic”,
+    “Ureia”,
+    “Enxofre”,
+    “Sufur”,
+    “Biofragane”
 ]
 
 DIAS_RETROATIVOS = 360
