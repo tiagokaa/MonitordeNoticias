@@ -220,7 +220,14 @@ html = f"""
 
         body {{
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #EFF4F9 0%, #D6E3EF 100%);
+            background-color: #EFF4F9;
+            background-image:
+                linear-gradient(rgba(239, 244, 249, 0.68), rgba(214, 227, 239, 0.68)),
+                url("https://raw.githubusercontent.com/tiagokaa/MonitordeNoticias/main/BACKDROP.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
             color: #323E48;
