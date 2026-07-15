@@ -3,6 +3,7 @@ import pandas as pd
 
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from urllib.parse import quote
 from html import escape
 
@@ -35,12 +36,15 @@ DIAS_RETROATIVOS = 360
 
 GOOGLE_NEWS_LANGUAGE = "pt-BR"
 BING_NEWS_LANGUAGE = "pt-BR"
+TIMEZONE = ZoneInfo("America/Sao_Paulo")
+DISPLAY_TIMEZONE = "UTC-3"
 
 # ======================================
 # COLETA DAS NOTICIAS
 # ======================================
 
-data_limite = datetime.now() - timedelta(days=DIAS_RETROATIVOS)
+data_limite = datetime.now(TIMEZONE) - timedelta(days=DIAS_RETROATIVOS)
+data_limite_ts = pd.Timestamp(data_limite)
 
 noticias = []
 
@@ -82,11 +86,12 @@ def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
 
             try:
 
-                data_pub = pd.to_datetime(
-                    item.pubDate.text
+                data_pub = (
+                    pd.to_datetime(item.pubDate.text, utc=True)
+                    .tz_convert(TIMEZONE)
                 )
 
-                if data_pub.tz_localize(None) >= data_limite:
+                if data_pub >= data_limite_ts:
 
                     titulo = item.title.text.strip()
                     if not noticia_corresponde_keyword(titulo, keyword):
@@ -148,7 +153,7 @@ df = df.sort_values(
 # ======================================
 
 arquivo_excel = (
-    f"Noticias_Calcario_{datetime.now():%Y%m%d}.xlsx"
+    f"Noticias_Calcario_{datetime.now(TIMEZONE):%Y%m%d}.xlsx"
 )
 
 df_excel = df.copy()
@@ -167,9 +172,9 @@ df_excel.to_excel(
 # HTML5 COM DESIGN MODERNO
 # ======================================
 
-ultima_atualizacao = datetime.now().strftime(
+ultima_atualizacao = datetime.now(TIMEZONE).strftime(
     "%d/%m/%Y %H:%M:%S"
-)
+) + f" ({DISPLAY_TIMEZONE})"
 
 cards_html = ""
 
