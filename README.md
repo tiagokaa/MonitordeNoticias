@@ -19,10 +19,9 @@ Este projeto coleta notícias automaticamente (Google News RSS + Bing News RSS) 
 O workflow do GitHub Actions executa o scraper várias vezes ao dia e atualiza:
 
 - `index.html` (site publicado)
-- `Noticias_Arte_Digital_YYYYMMDD.xlsx` (exportação em planilha)
 
 ## Arquivos principais
 
-- `news_scraper.py`: coleta, consolida e gera HTML/Excel.
+- `news_scraper.py`: coleta, consolida e gera o HTML.
 - `index.html`: página final publicada.
 - `.github/workflows/update-news.yml`: agenda e automação de atualização.

@@ -229,26 +229,6 @@ df = df.sort_values(
 )
 
 # ======================================
-# EXCEL
-# ======================================
-
-arquivo_excel = (
-    f"Noticias_Arte_Digital_{datetime.now(TIMEZONE):%Y%m%d}.xlsx"
-)
-
-df_excel = df.copy()
-
-df_excel["Data"] = (
-    df_excel["Data"]
-    .dt.strftime("%d/%m/%Y %H:%M")
-)
-
-df_excel.to_excel(
-    arquivo_excel,
-    index=False
-)
-
-# ======================================
 # HTML5 COM DESIGN MODERNO
 # ======================================
 
@@ -638,6 +618,5 @@ with open(
 
     f.write(html)
 
-print(f"Sucesso! Excel gerado: {arquivo_excel}")
 print(f"Sucesso! HTML gerado : {arquivo_html}")
 print(f"Sucesso! Noticias encontradas: {len(df)}")
