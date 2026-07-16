@@ -11,26 +11,85 @@ from html import escape
 # CONFIGURACOES
 # ======================================
 
-KEYWORDS = [
-    "calcario agricola",
-    "cal agricola",
-    "calcario",
-    "corretivo de solo",
-    "limestone",
-    "agricultural lime",
-    "Lhoist",
-    "Ical",
-    "\"Cal Cruzeiro\"",
-    "Sibelco",
-    "Brasical",
-    "CMOC",
-    "Mosaic",
-    "Ureia",
-    "Enxofre",
-    "Sufur",
-    "Biofragane",
-    "Carmeuse"
-]
+CATEGORY_KEYWORDS = {
+    "Inteligência Artificial": [
+        "inteligência artificial", "artificial intelligence", "IA generativa",
+        "generative AI", "GenAI", "machine learning", "deep learning",
+        "computer vision", "large language models", "LLM", "multimodal AI",
+        "agentes de IA", "AI agents", "AI ethics", "IA responsável", "IA explicável"
+    ],
+    "Arte + IA": [
+        "AI Art", "arte com IA", "arte generativa", "generative art",
+        "arte algorítmica", "algorithmic art", "arte computacional", "arte digital",
+        "digital art", "new media art", "media art", "creative AI",
+        "AI artist", "artificial creativity", "criatividade computacional"
+    ],
+    "Imagem, vídeo, som": [
+        "text-to-image", "image generation", "AI image", "AI video",
+        "text-to-video", "video generation", "AI music", "AI audio",
+        "voice cloning", "speech synthesis", "music generation", "Runway",
+        "Midjourney", "Flux", "Stable Diffusion", "DALL-E"
+    ],
+    "XR, Imersão e Espaços Digitais": [
+        "XR", "extended reality", "virtual reality", "VR", "augmented reality", "AR",
+        "mixed reality", "spatial computing", "immersive art", "immersive experience",
+        "metaverse", "digital twin", "volumetric capture"
+    ],
+    "NFTs, Blockchain e Web3": [
+        "NFT", "crypto art", "blockchain art", "Web3", "on-chain art",
+        "digital collectibles", "generative NFTs", "digital ownership", "tokenized art"
+    ],
+    "Museus, Exposições e Instituições": [
+        "digital exhibition", "AI exhibition", "immersive exhibition",
+        "new media exhibition", "museum technology", "museum innovation",
+        "media art festival", "digital culture", "electronic art"
+    ],
+    "Pesquisa Científica": [
+        "computational creativity", "human-AI collaboration", "AI and creativity",
+        "creative technologies", "digital humanities", "human computer interaction",
+        "HCI", "interactive art", "creative coding"
+    ],
+    "Educação": [
+        "AI education", "creative education", "digital literacy",
+        "media literacy", "STEAM", "arte e tecnologia", "educação digital"
+    ],
+    "Políticas Públicas e Regulação": [
+        "AI regulation", "AI Act", "copyright AI", "ethical AI",
+        "AI governance", "intellectual property AI"
+    ],
+    "Chamadas e Fomento": [
+        "call for artists", "open call", "artist residency", "residência artística",
+        "creative technology grant", "innovation grant", "research funding",
+        "XR funding", "digital art award"
+    ],
+    "Empresas e Plataformas": [
+        "OpenAI", "Anthropic", "Google DeepMind", "Adobe Firefly", "Runway",
+        "Stability AI", "Midjourney", "Meta AI", "NVIDIA", "Unity", "Unreal Engine",
+        "Epic Games", "Autodesk", "Blender", "Hugging Face"
+    ],
+    "Artistas": [
+        "Refik Anadol", "Sougwen Chung", "Mario Klingemann", "Anna Ridler",
+        "Memo Akten", "Ian Cheng", "Hito Steyerl", "teamLab"
+    ],
+    "Termos acadêmicos": [
+        "creative technologies", "computational aesthetics", "post-digital", "postdigital",
+        "human-machine collaboration", "human-AI collaboration", "algorithmic culture",
+        "algorithmic aesthetics", "digital materiality", "technological mediation",
+        "presence", "embodiment", "interactive systems", "creative computing"
+    ],
+    "Pesquisa em português": [
+        "arte e tecnologia", "arte digital", "arte imersiva", "criatividade computacional",
+        "inteligência artificial", "realidade estendida", "realidade virtual",
+        "realidade aumentada", "experiência imersiva", "cultura digital",
+        "arte generativa", "arte algorítmica", "instalação interativa"
+    ],
+    "Pesquisa em inglês": [
+        "AI Art", "Generative Art", "Creative AI", "Digital Art", "Immersive Art",
+        "Media Art", "Computational Creativity", "Interactive Art", "Extended Reality",
+        "Creative Technology", "Human-AI Collaboration", "Artificial Creativity",
+        "New Media Art", "Digital Culture", "Creative Coding", "Machine Creativity"
+    ]
+}
 
 DIAS_RETROATIVOS = 360
 
@@ -38,6 +97,28 @@ GOOGLE_NEWS_LANGUAGE = "pt-BR"
 BING_NEWS_LANGUAGE = "pt-BR"
 TIMEZONE = ZoneInfo("America/Sao_Paulo")
 DISPLAY_TIMEZONE = "UTC-3"
+
+def unique_terms(values):
+
+    seen = set()
+    cleaned = []
+
+    for value in values:
+        term = value.strip()
+        if not term:
+            continue
+        normalized = term.casefold()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        cleaned.append(term)
+
+    return cleaned
+
+SEARCH_TERMS = []
+for category, keywords in CATEGORY_KEYWORDS.items():
+    for keyword in unique_terms(keywords):
+        SEARCH_TERMS.append((category, keyword))
 
 # ======================================
 # COLETA DAS NOTICIAS
@@ -71,7 +152,7 @@ def noticia_corresponde_keyword(titulo: str, keyword: str) -> bool:
 
     return True
 
-def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
+def coletar_noticias_rss(category: str, keyword: str, fonte: str, rss_url: str) -> None:
 
     try:
 
@@ -98,6 +179,7 @@ def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
                         continue
 
                     noticias.append({
+                        "Categoria": category,
                         "Palavra-chave": keyword,
                         "Titulo": titulo,
                         "Data": data_pub,
@@ -108,9 +190,9 @@ def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
                 pass
 
     except Exception as erro:
-        print(f"Erro em '{keyword}' ({fonte}): {erro}")
+        print(f"Erro em '{keyword}' [{category}] ({fonte}): {erro}")
 
-for keyword in KEYWORDS:
+for category, keyword in SEARCH_TERMS:
 
     query = montar_query_google(keyword)
 
@@ -126,8 +208,8 @@ for keyword in KEYWORDS:
         f"&mkt={BING_NEWS_LANGUAGE}"
     )
 
-    coletar_noticias_rss(keyword, "Google News", google_rss_url)
-    coletar_noticias_rss(keyword, "Bing News", bing_rss_url)
+    coletar_noticias_rss(category, keyword, "Google News", google_rss_url)
+    coletar_noticias_rss(category, keyword, "Bing News", bing_rss_url)
 
 # ======================================
 # DATAFRAME
@@ -139,9 +221,7 @@ if df.empty:
     print("Nenhuma noticia encontrada.")
     raise SystemExit()
 
-df = df.drop_duplicates(
-    subset=["Titulo"]
-)
+df = df.drop_duplicates(subset=["Titulo", "Categoria", "Palavra-chave"])
 
 df = df.sort_values(
     by="Data",
@@ -153,7 +233,7 @@ df = df.sort_values(
 # ======================================
 
 arquivo_excel = (
-    f"Noticias_Calcario_{datetime.now(TIMEZONE):%Y%m%d}.xlsx"
+    f"Noticias_Arte_Digital_{datetime.now(TIMEZONE):%Y%m%d}.xlsx"
 )
 
 df_excel = df.copy()
@@ -181,16 +261,20 @@ cards_html = ""
 for idx, (_, row) in enumerate(df.iterrows(), 1):
 
     titulo = escape(str(row["Titulo"]))
+    categoria = escape(str(row["Categoria"]))
     keyword = escape(str(row["Palavra-chave"]))
     data = row["Data"].strftime("%d/%m/%Y %H:%M")
     link = escape(str(row["Link"]))
 
     cards_html += f"""
-    <article class="card">
+    <article class="card" data-category="{categoria}" data-keyword="{keyword}">
 
         <div class="card-header">
             <span class="card-number">#{idx}</span>
-            <span class="badge">{keyword}</span>
+            <div class="card-tags">
+                <span class="badge badge-category">{categoria}</span>
+                <span class="badge badge-keyword">{keyword}</span>
+            </div>
         </div>
 
         <a href="{link}" target="_blank" rel="noopener noreferrer" class="card-title-link" title="Abrir noticia">
@@ -214,7 +298,7 @@ html = f"""
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Noticias de Calcario</title>
+    <title>Monitor de Notícias de Arte Digital e IA</title>
 
     <style>
         * {{
@@ -225,17 +309,10 @@ html = f"""
 
         body {{
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #EFF4F9;
-            background-image:
-                linear-gradient(rgba(239, 244, 249, 0.68), rgba(214, 227, 239, 0.68)),
-                url("https://raw.githubusercontent.com/tiagokaa/MonitordeNoticias/main/BACKDROP.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: #f4f4f4;
             min-height: 100vh;
             padding: 20px;
-            color: #323E48;
+            color: #222;
         }}
 
         header {{
@@ -243,10 +320,10 @@ html = f"""
             margin: 0 auto 40px;
             text-align: center;
             color: white;
-            background: linear-gradient(135deg, #10497C 0%, #0067B3 100%);
+            background: #202020;
             padding: 40px 20px;
             border-radius: 12px;
-            border: 1px solid #248DC1;
+            border: 1px solid #343434;
         }}
 
         header h1 {{
@@ -264,19 +341,19 @@ html = f"""
         }}
 
         .stat {{
-            background: #EFF4F9;
+            background: #ffffff;
             padding: 15px 25px;
             border-radius: 8px;
             font-size: 1.1rem;
-            color: #1C2325;
-            border: 1px solid #CFD2D3;
+            color: #222;
+            border: 1px solid #d8d8d8;
         }}
 
         .stat strong {{
             display: block;
             font-size: 1.8rem;
             margin-top: 5px;
-            color: #10497C;
+            color: #111;
         }}
 
         .search-container {{
@@ -286,7 +363,7 @@ html = f"""
 
         .search-label {{
             display: block;
-            color: #10497C;
+            color: #222;
             font-weight: 600;
             margin-bottom: 10px;
         }}
@@ -294,18 +371,18 @@ html = f"""
         .search-input {{
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #A2A9AD;
+            border: 1px solid #c8c8c8;
             border-radius: 10px;
             background: #FFFFFF;
             font-size: 1rem;
-            color: #323E48;
+            color: #222;
             outline: none;
             transition: box-shadow 0.2s, border-color 0.2s;
         }}
 
         .search-input:focus {{
-            border-color: #248DC1;
-            box-shadow: 0 0 0 3px rgba(36, 141, 193, 0.22);
+            border-color: #777;
+            box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.15);
         }}
 
         main {{
@@ -320,8 +397,8 @@ html = f"""
             background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
-            border: 1px solid #CFD2D3;
-            box-shadow: 0 8px 24px rgba(16, 73, 124, 0.12);
+            border: 1px solid #d8d8d8;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
@@ -330,7 +407,7 @@ html = f"""
 
         .card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 12px 28px rgba(16, 73, 124, 0.2);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
         }}
 
         .card.is-hidden {{
@@ -340,24 +417,38 @@ html = f"""
         .card-header {{
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
+        }}
+
+        .card-tags {{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
         }}
 
         .card-number {{
             font-weight: 700;
-            color: #0067B3;
+            color: #666;
             font-size: 0.9rem;
         }}
 
         .badge {{
-            background: linear-gradient(135deg, #0098A7 0%, #248DC1 100%);
-            color: white;
+            color: #fff;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             white-space: nowrap;
+        }}
+
+        .badge-category {{
+            background: #333;
+        }}
+
+        .badge-keyword {{
+            background: #666;
         }}
 
         .card-title-link {{
@@ -369,20 +460,20 @@ html = f"""
         .card-title {{
             font-size: 1.2rem;
             line-height: 1.4;
-            color: #323E48;
+            color: #222;
             font-weight: 600;
             transition: all 0.2s;
         }}
 
         .card-title-link:hover .card-title {{
-            color: #F58220;
+            color: #000;
         }}
 
         .card-meta {{
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #5F6B6D;
+            color: #666;
             font-size: 0.95rem;
         }}
 
@@ -392,21 +483,21 @@ html = f"""
 
         time {{
             font-weight: 500;
-            color: #10497C;
+            color: #444;
         }}
 
         footer {{
             text-align: center;
             margin-top: 50px;
-            color: #5F6B6D;
+            color: #666;
             font-size: 0.95rem;
         }}
 
         .no-results {{
             max-width: 1200px;
             margin: 0 auto 24px;
-            background: #F58220;
-            color: #FFFFFF;
+            background: #e9e9e9;
+            color: #222;
             text-align: center;
             font-weight: 600;
             border-radius: 10px;
@@ -434,7 +525,7 @@ html = f"""
 <body>
 
     <header>
-        <h1>📰 Monitor de Noticias de Calcario</h1>
+        <h1>📰 Monitor de Notícias de Arte Digital e IA</h1>
         <div class="stats">
             <div class="stat">
                 Noticias encontradas
@@ -448,7 +539,7 @@ html = f"""
     </header>
 
     <section class="search-container" aria-label="Filtro de noticias">
-        <label class="search-label" for="news-search">Buscar noticias por palavra-chave ou titulo</label>
+        <label class="search-label" for="news-search">Buscar notícias por categoria, palavra-chave ou título</label>
         <input id="news-search" class="search-input" type="search" placeholder="Digite para filtrar..." list="keyword-suggestions" autocomplete="off">
         <datalist id="keyword-suggestions"></datalist>
     </section>
@@ -460,7 +551,7 @@ html = f"""
     </main>
 
     <footer>
-        <p>Monitor de noticias automatico • Atualizado em {ultima_atualizacao}</p>
+        <p>Monitor automático de arte digital e IA • Atualizado em {ultima_atualizacao}</p>
     </footer>
 
     <script>
@@ -472,25 +563,31 @@ html = f"""
 
         const normalizeText = (value) => value.toLocaleLowerCase("pt-BR");
 
-        const keywordMap = new Map();
+        const suggestionMap = new Map();
         for (const card of cards) {{
-            const keywordText = card.querySelector(".badge")?.textContent?.trim();
-            if (!keywordText) {{
-                continue;
-            }}
+            const terms = [
+                card.dataset.keyword?.trim(),
+                card.dataset.category?.trim()
+            ];
 
-            const normalizedKeyword = normalizeText(keywordText);
-            if (!keywordMap.has(normalizedKeyword)) {{
-                keywordMap.set(normalizedKeyword, keywordText);
+            for (const term of terms) {{
+                if (!term) {{
+                    continue;
+                }}
+
+                const normalizedTerm = normalizeText(term);
+                if (!suggestionMap.has(normalizedTerm)) {{
+                    suggestionMap.set(normalizedTerm, term);
+                }}
             }}
         }}
 
         Array
-            .from(keywordMap.values())
+            .from(suggestionMap.values())
             .sort((a, b) => a.localeCompare(b, "pt-BR", {{ sensitivity: "base" }}))
-            .forEach((keyword) => {{
+            .forEach((term) => {{
                 const option = document.createElement("option");
-                option.value = keyword;
+                option.value = term;
                 suggestionsList.appendChild(option);
             }});
 
@@ -500,8 +597,9 @@ html = f"""
 
             for (const card of cards) {{
                 const title = card.querySelector(".card-title")?.textContent ?? "";
-                const keyword = card.querySelector(".badge")?.textContent ?? "";
-                const searchableText = normalizeText(`${{title}} ${{keyword}}`);
+                const keyword = card.dataset.keyword ?? "";
+                const category = card.dataset.category ?? "";
+                const searchableText = normalizeText(`${{title}} ${{keyword}} ${{category}}`);
                 const isMatch = !filterText || searchableText.includes(filterText);
 
                 card.classList.toggle("is-hidden", !isMatch);
