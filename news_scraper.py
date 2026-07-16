@@ -11,85 +11,26 @@ from html import escape
 # CONFIGURACOES
 # ======================================
 
-CATEGORY_KEYWORDS = {
-    "Inteligência Artificial": [
-        "inteligência artificial", "artificial intelligence", "IA generativa",
-        "generative AI", "GenAI", "machine learning", "deep learning",
-        "computer vision", "large language models", "LLM", "multimodal AI",
-        "agentes de IA", "AI agents", "AI ethics", "IA responsável", "IA explicável"
-    ],
-    "Arte + IA": [
-        "AI Art", "arte com IA", "arte generativa", "generative art",
-        "arte algorítmica", "algorithmic art", "arte computacional", "arte digital",
-        "digital art", "new media art", "media art", "creative AI",
-        "AI artist", "artificial creativity", "criatividade computacional"
-    ],
-    "Imagem, vídeo, som": [
-        "text-to-image", "image generation", "AI image", "AI video",
-        "text-to-video", "video generation", "AI music", "AI audio",
-        "voice cloning", "speech synthesis", "music generation", "Runway",
-        "Midjourney", "Flux", "Stable Diffusion", "DALL-E"
-    ],
-    "XR, Imersão e Espaços Digitais": [
-        "XR", "extended reality", "virtual reality", "VR", "augmented reality", "AR",
-        "mixed reality", "spatial computing", "immersive art", "immersive experience",
-        "metaverse", "digital twin", "volumetric capture"
-    ],
-    "NFTs, Blockchain e Web3": [
-        "NFT", "crypto art", "blockchain art", "Web3", "on-chain art",
-        "digital collectibles", "generative NFTs", "digital ownership", "tokenized art"
-    ],
-    "Museus, Exposições e Instituições": [
-        "digital exhibition", "AI exhibition", "immersive exhibition",
-        "new media exhibition", "museum technology", "museum innovation",
-        "media art festival", "digital culture", "electronic art"
-    ],
-    "Pesquisa Científica": [
-        "computational creativity", "human-AI collaboration", "AI and creativity",
-        "creative technologies", "digital humanities", "human computer interaction",
-        "HCI", "interactive art", "creative coding"
-    ],
-    "Educação": [
-        "AI education", "creative education", "digital literacy",
-        "media literacy", "STEAM", "arte e tecnologia", "educação digital"
-    ],
-    "Políticas Públicas e Regulação": [
-        "AI regulation", "AI Act", "copyright AI", "ethical AI",
-        "AI governance", "intellectual property AI"
-    ],
-    "Chamadas e Fomento": [
-        "call for artists", "open call", "artist residency", "residência artística",
-        "creative technology grant", "innovation grant", "research funding",
-        "XR funding", "digital art award"
-    ],
-    "Empresas e Plataformas": [
-        "OpenAI", "Anthropic", "Google DeepMind", "Adobe Firefly", "Runway",
-        "Stability AI", "Midjourney", "Meta AI", "NVIDIA", "Unity", "Unreal Engine",
-        "Epic Games", "Autodesk", "Blender", "Hugging Face"
-    ],
-    "Artistas": [
-        "Refik Anadol", "Sougwen Chung", "Mario Klingemann", "Anna Ridler",
-        "Memo Akten", "Ian Cheng", "Hito Steyerl", "teamLab"
-    ],
-    "Termos acadêmicos": [
-        "creative technologies", "computational aesthetics", "post-digital", "postdigital",
-        "human-machine collaboration", "human-AI collaboration", "algorithmic culture",
-        "algorithmic aesthetics", "digital materiality", "technological mediation",
-        "presence", "embodiment", "interactive systems", "creative computing"
-    ],
-    "Pesquisa em português": [
-        "arte e tecnologia", "arte digital", "arte imersiva", "criatividade computacional",
-        "inteligência artificial", "realidade estendida", "realidade virtual",
-        "realidade aumentada", "experiência imersiva", "cultura digital",
-        "arte generativa", "arte algorítmica", "instalação interativa"
-    ],
-    "Pesquisa em inglês": [
-        "AI Art", "Generative Art", "Creative AI", "Digital Art", "Immersive Art",
-        "Media Art", "Computational Creativity", "Interactive Art", "Extended Reality",
-        "Creative Technology", "Human-AI Collaboration", "Artificial Creativity",
-        "New Media Art", "Digital Culture", "Creative Coding", "Machine Creativity"
-    ]
-}
+KEYWORDS = [
+    "calcario agricola",
+    "cal agricola",
+    "calcario",
+    "corretivo de solo",
+    "limestone",
+    "agricultural lime",
+    "Lhoist",
+    "Ical",
+    "\"Cal Cruzeiro\"",
+    "Sibelco",
+    "Brasical",
+    "CMOC",
+    "Mosaic",
+    "Ureia",
+    "Enxofre",
+    "Sufur",
+    "Biofragane",
+    "Carmeuse"
+]
 
 DIAS_RETROATIVOS = 360
 
@@ -97,28 +38,6 @@ GOOGLE_NEWS_LANGUAGE = "pt-BR"
 BING_NEWS_LANGUAGE = "pt-BR"
 TIMEZONE = ZoneInfo("America/Sao_Paulo")
 DISPLAY_TIMEZONE = "UTC-3"
-
-def unique_terms(values):
-
-    seen = set()
-    cleaned = []
-
-    for value in values:
-        term = value.strip()
-        if not term:
-            continue
-        normalized = term.casefold()
-        if normalized in seen:
-            continue
-        seen.add(normalized)
-        cleaned.append(term)
-
-    return cleaned
-
-SEARCH_TERMS = []
-for category, keywords in CATEGORY_KEYWORDS.items():
-    for keyword in unique_terms(keywords):
-        SEARCH_TERMS.append((category, keyword))
 
 # ======================================
 # COLETA DAS NOTICIAS
@@ -152,7 +71,7 @@ def noticia_corresponde_keyword(titulo: str, keyword: str) -> bool:
 
     return True
 
-def coletar_noticias_rss(category: str, keyword: str, fonte: str, rss_url: str) -> None:
+def coletar_noticias_rss(keyword: str, fonte: str, rss_url: str) -> None:
 
     try:
 
@@ -179,7 +98,6 @@ def coletar_noticias_rss(category: str, keyword: str, fonte: str, rss_url: str) 
                         continue
 
                     noticias.append({
-                        "Categoria": category,
                         "Palavra-chave": keyword,
                         "Titulo": titulo,
                         "Data": data_pub,
@@ -190,9 +108,9 @@ def coletar_noticias_rss(category: str, keyword: str, fonte: str, rss_url: str) 
                 pass
 
     except Exception as erro:
-        print(f"Erro em '{keyword}' [{category}] ({fonte}): {erro}")
+        print(f"Erro em '{keyword}' ({fonte}): {erro}")
 
-for category, keyword in SEARCH_TERMS:
+for keyword in KEYWORDS:
 
     query = montar_query_google(keyword)
 
@@ -208,8 +126,8 @@ for category, keyword in SEARCH_TERMS:
         f"&mkt={BING_NEWS_LANGUAGE}"
     )
 
-    coletar_noticias_rss(category, keyword, "Google News", google_rss_url)
-    coletar_noticias_rss(category, keyword, "Bing News", bing_rss_url)
+    coletar_noticias_rss(keyword, "Google News", google_rss_url)
+    coletar_noticias_rss(keyword, "Bing News", bing_rss_url)
 
 # ======================================
 # DATAFRAME
@@ -221,11 +139,33 @@ if df.empty:
     print("Nenhuma noticia encontrada.")
     raise SystemExit()
 
-df = df.drop_duplicates(subset=["Titulo", "Categoria", "Palavra-chave"])
+df = df.drop_duplicates(
+    subset=["Titulo"]
+)
 
 df = df.sort_values(
     by="Data",
     ascending=False
+)
+
+# ======================================
+# EXCEL
+# ======================================
+
+arquivo_excel = (
+    f"Noticias_Calcario_{datetime.now(TIMEZONE):%Y%m%d}.xlsx"
+)
+
+df_excel = df.copy()
+
+df_excel["Data"] = (
+    df_excel["Data"]
+    .dt.strftime("%d/%m/%Y %H:%M")
+)
+
+df_excel.to_excel(
+    arquivo_excel,
+    index=False
 )
 
 # ======================================
@@ -241,20 +181,16 @@ cards_html = ""
 for idx, (_, row) in enumerate(df.iterrows(), 1):
 
     titulo = escape(str(row["Titulo"]))
-    categoria = escape(str(row["Categoria"]))
     keyword = escape(str(row["Palavra-chave"]))
     data = row["Data"].strftime("%d/%m/%Y %H:%M")
     link = escape(str(row["Link"]))
 
     cards_html += f"""
-    <article class="card" data-category="{categoria}" data-keyword="{keyword}">
+    <article class="card">
 
         <div class="card-header">
             <span class="card-number">#{idx}</span>
-            <div class="card-tags">
-                <span class="badge badge-category">{categoria}</span>
-                <span class="badge badge-keyword">{keyword}</span>
-            </div>
+            <span class="badge">{keyword}</span>
         </div>
 
         <a href="{link}" target="_blank" rel="noopener noreferrer" class="card-title-link" title="Abrir noticia">
@@ -278,7 +214,7 @@ html = f"""
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Notícias de Arte Digital e IA</title>
+    <title>Monitor de Noticias de Calcario</title>
 
     <style>
         * {{
@@ -289,18 +225,17 @@ html = f"""
 
         body {{
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f3f5f7;
+            background-color: #EFF4F9;
             background-image:
-                radial-gradient(circle at 20% 20%, rgba(0, 170, 255, 0.16) 0 180px, transparent 181px),
-                radial-gradient(circle at 80% 10%, rgba(123, 92, 255, 0.14) 0 220px, transparent 221px),
-                linear-gradient(120deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0) 45%),
-                linear-gradient(rgba(24, 28, 39, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(24, 28, 39, 0.08) 1px, transparent 1px);
-            background-size: auto, auto, auto, 28px 28px, 28px 28px;
+                linear-gradient(rgba(239, 244, 249, 0.68), rgba(214, 227, 239, 0.68)),
+                url("https://raw.githubusercontent.com/tiagokaa/MonitordeNoticias/main/BACKDROP.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
-            color: #222;
+            color: #323E48;
         }}
 
         header {{
@@ -308,10 +243,10 @@ html = f"""
             margin: 0 auto 40px;
             text-align: center;
             color: white;
-            background: #202020;
+            background: linear-gradient(135deg, #10497C 0%, #0067B3 100%);
             padding: 40px 20px;
             border-radius: 12px;
-            border: 1px solid #343434;
+            border: 1px solid #248DC1;
         }}
 
         header h1 {{
@@ -329,19 +264,19 @@ html = f"""
         }}
 
         .stat {{
-            background: #ffffff;
+            background: #EFF4F9;
             padding: 15px 25px;
             border-radius: 8px;
             font-size: 1.1rem;
-            color: #222;
-            border: 1px solid #d8d8d8;
+            color: #1C2325;
+            border: 1px solid #CFD2D3;
         }}
 
         .stat strong {{
             display: block;
             font-size: 1.8rem;
             margin-top: 5px;
-            color: #111;
+            color: #10497C;
         }}
 
         .search-container {{
@@ -351,7 +286,7 @@ html = f"""
 
         .search-label {{
             display: block;
-            color: #222;
+            color: #10497C;
             font-weight: 600;
             margin-bottom: 10px;
         }}
@@ -359,18 +294,18 @@ html = f"""
         .search-input {{
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #c8c8c8;
+            border: 1px solid #A2A9AD;
             border-radius: 10px;
             background: #FFFFFF;
             font-size: 1rem;
-            color: #222;
+            color: #323E48;
             outline: none;
             transition: box-shadow 0.2s, border-color 0.2s;
         }}
 
         .search-input:focus {{
-            border-color: #777;
-            box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.15);
+            border-color: #248DC1;
+            box-shadow: 0 0 0 3px rgba(36, 141, 193, 0.22);
         }}
 
         main {{
@@ -385,8 +320,8 @@ html = f"""
             background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
-            border: 1px solid #d8d8d8;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #CFD2D3;
+            box-shadow: 0 8px 24px rgba(16, 73, 124, 0.12);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
@@ -395,7 +330,7 @@ html = f"""
 
         .card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+            box-shadow: 0 12px 28px rgba(16, 73, 124, 0.2);
         }}
 
         .card.is-hidden {{
@@ -405,38 +340,24 @@ html = f"""
         .card-header {{
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             gap: 10px;
-        }}
-
-        .card-tags {{
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            gap: 8px;
         }}
 
         .card-number {{
             font-weight: 700;
-            color: #666;
+            color: #0067B3;
             font-size: 0.9rem;
         }}
 
         .badge {{
-            color: #fff;
+            background: linear-gradient(135deg, #0098A7 0%, #248DC1 100%);
+            color: white;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             white-space: nowrap;
-        }}
-
-        .badge-category {{
-            background: #333;
-        }}
-
-        .badge-keyword {{
-            background: #666;
         }}
 
         .card-title-link {{
@@ -448,20 +369,20 @@ html = f"""
         .card-title {{
             font-size: 1.2rem;
             line-height: 1.4;
-            color: #222;
+            color: #323E48;
             font-weight: 600;
             transition: all 0.2s;
         }}
 
         .card-title-link:hover .card-title {{
-            color: #000;
+            color: #F58220;
         }}
 
         .card-meta {{
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #666;
+            color: #5F6B6D;
             font-size: 0.95rem;
         }}
 
@@ -471,21 +392,21 @@ html = f"""
 
         time {{
             font-weight: 500;
-            color: #444;
+            color: #10497C;
         }}
 
         footer {{
             text-align: center;
             margin-top: 50px;
-            color: #666;
+            color: #5F6B6D;
             font-size: 0.95rem;
         }}
 
         .no-results {{
             max-width: 1200px;
             margin: 0 auto 24px;
-            background: #e9e9e9;
-            color: #222;
+            background: #F58220;
+            color: #FFFFFF;
             text-align: center;
             font-weight: 600;
             border-radius: 10px;
@@ -513,7 +434,7 @@ html = f"""
 <body>
 
     <header>
-        <h1>📰 Monitor de Notícias de Arte Digital e IA</h1>
+        <h1>📰 Monitor de Noticias de Calcario</h1>
         <div class="stats">
             <div class="stat">
                 Noticias encontradas
@@ -527,7 +448,7 @@ html = f"""
     </header>
 
     <section class="search-container" aria-label="Filtro de noticias">
-        <label class="search-label" for="news-search">Buscar notícias por categoria, palavra-chave ou título</label>
+        <label class="search-label" for="news-search">Buscar noticias por palavra-chave ou titulo</label>
         <input id="news-search" class="search-input" type="search" placeholder="Digite para filtrar..." list="keyword-suggestions" autocomplete="off">
         <datalist id="keyword-suggestions"></datalist>
     </section>
@@ -539,7 +460,7 @@ html = f"""
     </main>
 
     <footer>
-        <p>Monitor automático de arte digital e IA • Atualizado em {ultima_atualizacao}</p>
+        <p>Monitor de noticias automatico • Atualizado em {ultima_atualizacao}</p>
     </footer>
 
     <script>
@@ -551,31 +472,25 @@ html = f"""
 
         const normalizeText = (value) => value.toLocaleLowerCase("pt-BR");
 
-        const suggestionMap = new Map();
+        const keywordMap = new Map();
         for (const card of cards) {{
-            const terms = [
-                card.dataset.keyword?.trim(),
-                card.dataset.category?.trim()
-            ];
+            const keywordText = card.querySelector(".badge")?.textContent?.trim();
+            if (!keywordText) {{
+                continue;
+            }}
 
-            for (const term of terms) {{
-                if (!term) {{
-                    continue;
-                }}
-
-                const normalizedTerm = normalizeText(term);
-                if (!suggestionMap.has(normalizedTerm)) {{
-                    suggestionMap.set(normalizedTerm, term);
-                }}
+            const normalizedKeyword = normalizeText(keywordText);
+            if (!keywordMap.has(normalizedKeyword)) {{
+                keywordMap.set(normalizedKeyword, keywordText);
             }}
         }}
 
         Array
-            .from(suggestionMap.values())
+            .from(keywordMap.values())
             .sort((a, b) => a.localeCompare(b, "pt-BR", {{ sensitivity: "base" }}))
-            .forEach((term) => {{
+            .forEach((keyword) => {{
                 const option = document.createElement("option");
-                option.value = term;
+                option.value = keyword;
                 suggestionsList.appendChild(option);
             }});
 
@@ -585,9 +500,8 @@ html = f"""
 
             for (const card of cards) {{
                 const title = card.querySelector(".card-title")?.textContent ?? "";
-                const keyword = card.dataset.keyword ?? "";
-                const category = card.dataset.category ?? "";
-                const searchableText = normalizeText(`${{title}} ${{keyword}} ${{category}}`);
+                const keyword = card.querySelector(".badge")?.textContent ?? "";
+                const searchableText = normalizeText(`${{title}} ${{keyword}}`);
                 const isMatch = !filterText || searchableText.includes(filterText);
 
                 card.classList.toggle("is-hidden", !isMatch);
@@ -618,5 +532,6 @@ with open(
 
     f.write(html)
 
+print(f"Sucesso! Excel gerado: {arquivo_excel}")
 print(f"Sucesso! HTML gerado : {arquivo_html}")
 print(f"Sucesso! Noticias encontradas: {len(df)}")
