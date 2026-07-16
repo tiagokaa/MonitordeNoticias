@@ -309,7 +309,15 @@ html = f"""
 
         body {{
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: #f4f4f4;
+            background-color: #f3f5f7;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(0, 170, 255, 0.16) 0 180px, transparent 181px),
+                radial-gradient(circle at 80% 10%, rgba(123, 92, 255, 0.14) 0 220px, transparent 221px),
+                linear-gradient(120deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0) 45%),
+                linear-gradient(rgba(24, 28, 39, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(24, 28, 39, 0.08) 1px, transparent 1px);
+            background-size: auto, auto, auto, 28px 28px, 28px 28px;
+            background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
             color: #222;
